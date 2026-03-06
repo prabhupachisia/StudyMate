@@ -1,0 +1,8 @@
+.env
+venv/
+test.py
+image.png
+corrupte
+__pycache__/
+
+node_modules/
