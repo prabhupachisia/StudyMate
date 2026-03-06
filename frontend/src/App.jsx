@@ -9,9 +9,6 @@ import QuizAssistant from "./components/QuizAssistant";
 import Login from "./pages/Login";
 import Tutor from "./pages/Tutor";
 import Hero from "./components/Hero";
-import Studio from "./pages/Studio";
-import ConceptTest from "./pages/ConceptTest";
-import ConceptSession from "./pages/ConceptSession";
 import { NavigationGuardProvider } from "./context/NavigationGuardContext";
 import Dashboard from "./pages/Dashboard";
 import LearningPaths from "./pages/LearningPaths";
@@ -120,57 +117,12 @@ const App = () => {
         }
       />
       <Route
-        path="/studio"
-        element={
-          <>
-            <SignedIn>
-              <ProtectedLayout>
-                <Studio />
-              </ProtectedLayout>
-            </SignedIn>
-            <SignedOut>
-              <Navigate to="/" replace />
-            </SignedOut>
-          </>
-        }
-      />
-      <Route
         path="/learningpaths"
         element={
           <>
             <SignedIn>
               <ProtectedLayout>
                 <LearningPaths />
-              </ProtectedLayout>
-            </SignedIn>
-            <SignedOut>
-              <Navigate to="/" replace />
-            </SignedOut>
-          </>
-        }
-      />
-      {/* <Route
-        path="/concept-test"
-        element={
-          <>
-            <SignedIn>
-              <ProtectedLayout>
-                <ConceptTest />
-              </ProtectedLayout>
-            </SignedIn>
-            <SignedOut>
-              <Navigate to="/" replace />
-            </SignedOut>
-          </>
-        }
-      /> */}
-      <Route
-        path="/concept-test/session"
-        element={
-          <>
-            <SignedIn>
-              <ProtectedLayout>
-                <ConceptSession />
               </ProtectedLayout>
             </SignedIn>
             <SignedOut>

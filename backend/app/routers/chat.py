@@ -23,7 +23,6 @@ logger = logging.getLogger(__name__)
 
 
 from app.rag import load_pdf, chunk_text, store_in_pinecone, retrieve
-from app.services.vision_service import analyze_chat_image 
 from app.services.usage_service import check_and_increment
 
 
@@ -170,7 +169,6 @@ chat_model = ChatGroq(
 class ChatRequest(BaseModel):
     message: str
     filename: str
-    image: Optional[str] = None
     is_socratic: bool = False
     is_feynman: bool = False
 
@@ -195,23 +193,7 @@ async def chat_with_book(request: ChatRequest, user_id: str = Header(None)):
     # Start with the plain text message
     effective_message = request.message
 
-    # --- VISION PROCESSING ---
-    if request.image:
-        logger.info("Processing chat image with Azure...")
-        try:
-            # Get description from Azure Vision
-            image_description = analyze_chat_image(request.image)
-            
-            # Combine User Text + Image Context
-            effective_message = (
-                f"{request.message}\n\n"
-                f"[CONTEXT FROM UPLOADED IMAGE: {image_description}]"
-            )
-            logger.info(f"Image description extracted: {image_description[:50]}...") 
-        except Exception as e:
-            logger.error(f"Error processing image: {e}") 
-            pass
- 
+    
     try:
         supabase.table("chat_history").insert({
             "user_id": user_id,

@@ -6,111 +6,27 @@ import {
 } from "@clerk/clerk-react";
 import {
   BarChart3,
-  Calendar as CalendarIcon,
   StickyNote,
   LayoutDashboard,
   Menu,
   X,
 } from "lucide-react";
 import UsageStats from "../components/UsageStats";
-import StudyCalendar from "../components/StudyCalendar/StudyCalendar";
-import Notes from "../components/Notes";
 import { AppContext } from "../context/AppContext";
 
 const Dashboard = () => {
   const { user } = useUser();
   const { getToken, userId } = useAuth();
   const [activeTab, setActiveTab] = useState("stats");
-  const [calendarEvents, setCalendarEvents] = useState([]);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const API_BASE_URL = import.meta.env.VITE_API_URL || "http://127.0.0.1:8000";
   const { files } = useContext(AppContext);
 
   const menuItems = [
     { id: "stats", label: "Usage Stats", icon: <BarChart3 size={18} /> },
-    {
-      id: "calendar",
-      label: "Study Calendar",
-      icon: <CalendarIcon size={18} />,
-    },
-    { id: "notes", label: "My Notes", icon: <StickyNote size={18} /> },
-    { id: "files", label: "My Files", icon: <LayoutDashboard size={18} /> },
   ];
 
-  const handleAddEvent = async (eventPayload) => {
-    try {
-      const token = await getToken(); 
-      // Updated URL to match your new FastAPI prefix
-      const response = await fetch(`${API_BASE_URL}/calendar/add-event`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-          "user-id": userId,
-        },
-        body: JSON.stringify(eventPayload),
-      });
 
-      if (response.ok) {
-        fetchCalendarEvents();
-      } else {
-        const errorData = await response.json();
-        console.error("Server error:", errorData.detail);
-      }
-    } catch (error) {
-      console.error("Error saving event:", error);
-    }
-  };
-
-  const fetchCalendarEvents = async () => {
-    try {
-      const token = await getToken();
-      const response = await fetch(`${API_BASE_URL}/calendar/get-events`, {
-        headers: { Authorization: `Bearer ${token}`, "user-id": userId },
-      });
-      const data = await response.json();
-      setCalendarEvents(
-        data.events.map((ev) => ({
-          ...ev,
-          start: ev.start_time,
-          end: ev.end_time,
-        })),
-      );
-    } catch (e) {
-      console.error(e);
-    }
-  };
-
-  useEffect(() => {
-    if (userId) fetchCalendarEvents();
-  }, [userId]);
-
-  const handleDeleteEvent = async (eventId) => {
-    // Optional: Add a confirmation dialog
-    if (!window.confirm("Are you sure you want to delete this event?")) return;
-
-    try {
-      const token = await getToken();
-      const response = await fetch(
-        `${API_BASE_URL}/calendar/delete-event/${eventId}`,
-        {
-          method: "DELETE",
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "user-id": userId,
-          },
-        },
-      );
-
-      if (response.ok) {
-        fetchCalendarEvents();
-      } else {
-        console.error("Failed to delete event");
-      }
-    } catch (error) {
-      console.error("Error deleting event:", error);
-    }
-  };
 
   const SidebarContent = () => (
     <div className="flex flex-col h-full bg-gray-950/50 backdrop-blur-xl border-r border-white/10">
@@ -208,21 +124,7 @@ const Dashboard = () => {
               </div>
             )}
 
-            {activeTab === "calendar" && (
-              <div className="animate-in fade-in zoom-in-95 duration-500 bg-white/5 border border-white/10 rounded-3xl p-1 min-h-[600px]">
-                <StudyCalendar
-                  events={calendarEvents}
-                  onAddEvent={handleAddEvent}
-                  onDeleteEvent={handleDeleteEvent}
-                />
-              </div>
-            )}
 
-            {activeTab === "notes" && (
-              <div className="animate-in fade-in duration-500 h-[calc(100vh-100px)]">
-                <Notes />
-              </div>
-            )}
           </div>
         </div>
       </main>

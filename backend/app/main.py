@@ -10,7 +10,6 @@ from app.services.websocket_manager import manager
 from app.routers.usage import router as usage_router 
 from app.routers.chat import router as chat_router
 from app.routers.quiz import router as quiz_router
-from app.routers.calendar import router as calendar_router
 from app.routers.files import router as file_router
 from app.routers.voice import router as voice_router
 from app.routers.learning_paths import router as learning_paths_router
@@ -51,5 +50,4 @@ app.include_router(chat_router)
 app.include_router(quiz_router)
 app.include_router(voice_router)
 app.include_router(file_router)
-app.include_router(calendar_router)
 app.include_router(learning_paths_router)
